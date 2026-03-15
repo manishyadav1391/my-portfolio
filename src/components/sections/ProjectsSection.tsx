@@ -25,7 +25,7 @@ const containerVariants = {
 const cardVariants = {
   hidden:  { opacity: 0, y: 40 },   // start: invisible, shifted down
   visible: { opacity: 1, y: 0,      // end: visible, in position
-    transition: { duration: 0.5, ease: 'easeOut' }
+    transition: { duration: 0.5, ease: 'easeOut' as const}
   },
 }
 // Now instead of <motion.div initial={{...}} animate={{...}}> on each card,
