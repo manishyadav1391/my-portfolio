@@ -1,11 +1,11 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { projects, type Project } from '@/data/projects'
 import { ArrowUpRight, Github } from 'lucide-react'
 import Image from 'next/image'
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: {},
   visible: {
     transition: {
@@ -14,12 +14,15 @@ const containerVariants = {
   },
 }
 
-const cardVariants = {
-  hidden:  { opacity: 0, y: 50 },
-  visible: { 
-    opacity: 1, 
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+    },
   },
 }
 
