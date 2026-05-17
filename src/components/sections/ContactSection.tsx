@@ -1,18 +1,10 @@
 'use client'
-// Needs 'use client' because:
-// 1. useActionState — tracks form submission state
-// 2. useFormStatus — tracks if form is pending/submitting
-// 3. User interactions (typing, submitting)
 
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { motion } from 'framer-motion'
-import { sendMessage, type ActionResult } from '@/actions/sendMessage'
-
-// ── Submit button — separate component ──────────────────────────
-// Must be its own component to use useFormStatus.
-// useFormStatus only works inside a <form> — and it reads
-// the status of the CLOSEST parent form automatically.
+import { sendMessage } from '@/actions/sendMessage'
+import { Send, Mail, MapPin } from 'lucide-react'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -21,16 +13,17 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full py-3 px-6 rounded-full bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      className="w-full relative group overflow-hidden rounded-2xl bg-primary px-8 py-4 text-sm font-bold text-white transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_40px_rgba(79,70,229,0.5)]"
     >
-      {pending ? 'Sending...' : 'Send message'}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+      <span className="relative flex items-center justify-center gap-2">
+        {pending ? 'Sending...' : (
+          <>Send Message <Send className="w-4 h-4" /></>
+        )}
+      </span>
     </button>
   )
 }
-
-// ── Reusable input field ────────────────────────────────────────
-// Extracting this avoids repeating the same className 3 times.
-// Small components like this are worth extracting.
 
 function InputField({
   label,
@@ -46,123 +39,111 @@ function InputField({
   textarea?: boolean
 }) {
   const sharedClassName = `
-    w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50
-    text-sm text-gray-900 placeholder:text-gray-400
-    focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent
-    transition-all resize-none
+    w-full rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-white
+    placeholder:text-slate-500 focus:border-primary focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all resize-none backdrop-blur-md
   `
 
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-gray-700">
-        {label}
-      </label>
+    <div className="flex flex-col gap-2 group">
+      <label className="text-xs font-bold uppercase tracking-widest text-slate-400 group-focus-within:text-primary transition-colors ml-1">{label}</label>
       {textarea ? (
-        <textarea
-          name={name}
-          placeholder={placeholder}
-          rows={5}
-          className={sharedClassName}
-        />
+        <textarea name={name} placeholder={placeholder} rows={5} className={sharedClassName} />
       ) : (
-        <input
-          type={type}
-          name={name}
-          placeholder={placeholder}
-          className={sharedClassName}
-        />
+        <input type={type} name={name} placeholder={placeholder} className={sharedClassName} />
       )}
     </div>
   )
 }
 
-// ── Main Contact section ────────────────────────────────────────
-
 export default function ContactSection() {
-
-  // useActionState is the hook that connects a Server Action to a form.
-  // It gives you:
-  //   state  = the last returned value from your Server Action (ActionResult | null)
-  //   action = a wrapped version of sendMessage to pass to the form
-  //
-  // null = the initial state before first submission
   const [state, action] = useActionState(sendMessage, null)
 
   return (
-    <section className="py-24 px-6 bg-white">
-      <div className="max-w-xl mx-auto">
+    <section className="relative py-32 px-6 bg-background overflow-hidden">
+      <div className="absolute right-0 top-0 w-[800px] h-[800px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute left-0 bottom-0 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="ambient-grid opacity-20" />
 
-        <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-          Get in touch
-        </h2>
-        <p className="text-gray-500 text-center mb-12">
-          Have a project in mind or just want to say hi? I'd love to hear from you.
-        </p>
+      <div className="relative max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+          
+          {/* Left Column: Contact Info */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col justify-center"
+          >
+            <p className="text-primary font-bold tracking-widest uppercase text-sm mb-4">
+              Get in touch
+            </p>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
+              Let's build something <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-400">extraordinary</span> together.
+            </h2>
+            <p className="text-slate-400 text-lg leading-relaxed mb-12">
+              Have an idea, a project, or just want to say hi? I'm always open to discussing new opportunities and challenges.
+            </p>
+            
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full glass-panel flex items-center justify-center border border-white/10 text-primary">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-widest text-slate-500 mb-1">Email</p>
+                  <p className="text-white font-medium">manishyadav940833@gmail.com</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full glass-panel flex items-center justify-center border border-white/10 text-cyan-400">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-widest text-slate-500 mb-1">Location</p>
+                  <p className="text-white font-medium">Remote / India</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+          {/* Right Column: Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <div className="relative group">
+              <div className="absolute -inset-1 rounded-[2.5rem] bg-gradient-to-br from-primary/30 to-cyan-400/30 opacity-50 blur-2xl transition-opacity duration-500 group-hover:opacity-70" />
+              
+              <div className="relative rounded-[2rem] glass-panel border border-white/10 p-8 sm:p-10 shadow-2xl">
+                <form action={action} className="flex flex-col gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <InputField label="Name" name="name" placeholder="John Doe" />
+                    <InputField label="Email" name="email" type="email" placeholder="john@example.com" />
+                  </div>
+                  <InputField label="Message" name="message" placeholder="Tell me about your project..." textarea />
 
-          {/*
-            action={action} connects the form to your Server Action.
-            When submitted, Next.js automatically:
-            1. Collects all input values as FormData
-            2. Sends it to the server
-            3. Runs sendMessage()
-            4. Updates 'state' with the return value
-            No fetch(), no JSON.stringify(), no event.preventDefault() needed.
-          */}
-          <form action={action} className="flex flex-col gap-5">
+                  {state && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`rounded-2xl px-5 py-4 text-sm font-bold border backdrop-blur-md ${state.success ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}
+                    >
+                      {state.message}
+                    </motion.div>
+                  )}
 
-            <InputField
-              label="Name"
-              name="name"          // must match formData.get('name') in the action
-              placeholder="Your name"
-            />
+                  <div className="pt-4">
+                    <SubmitButton />
+                  </div>
+                </form>
+              </div>
+            </div>
+          </motion.div>
 
-            <InputField
-              label="Email"
-              name="email"         // must match formData.get('email') in the action
-              type="email"
-              placeholder="your@email.com"
-            />
-
-            <InputField
-              label="Message"
-              name="message"       // must match formData.get('message') in the action
-              placeholder="Tell me about your project..."
-              textarea
-            />
-
-            {/*
-              state is null before first submit.
-              After submit, it has { success, message } from the Server Action.
-              We conditionally render feedback based on state.
-            */}
-            {state && (
-              <motion.div
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`
-                  px-4 py-3 rounded-xl text-sm font-medium
-                  ${state.success
-                    ? 'bg-green-50 text-green-700 border border-green-100'
-                    : 'bg-red-50 text-red-700 border border-red-100'
-                  }
-                `}
-              >
-                {state.message}
-              </motion.div>
-            )}
-
-            <SubmitButton />
-
-          </form>
-        </motion.div>
-
+        </div>
       </div>
     </section>
   )

@@ -2,6 +2,7 @@ export type Project = {
   title: string
   description: string
   tags: string[]
+  image: string
   githubUrl?: string
   liveUrl?: string
   featured: boolean
@@ -13,6 +14,7 @@ export const projects: Project[] = [
     description:
       'AI-based computer vision system that detects driver fatigue using webcam input. Uses OpenCV to monitor eye closure and trigger an alert when drowsiness is detected to prevent accidents.',
     tags: ['Python', 'OpenCV', 'Computer Vision', 'AI'],
+    image: '/projects/driver-drowsiness.png',
     githubUrl: 'https://github.com/manishyadav1391/Driver-drowsiness',
     featured: true,
   },
@@ -21,6 +23,7 @@ export const projects: Project[] = [
     description:
       'Simple weather application that fetches real-time weather data using an API and displays temperature and conditions in a clean UI.',
     tags: ['JavaScript', 'HTML', 'CSS', 'Weather API'],
+    image: '/projects/weather-app.png',
     githubUrl: 'https://github.com/manishyadav1391/WeatherApp',
     featured: false,
   },
@@ -29,6 +32,7 @@ export const projects: Project[] = [
     description:
       'Notification system designed to send alerts to parents for monitoring and safety purposes. Built as a project exploring automation and notification systems.',
     tags: ['Python', 'Automation', 'Notification System'],
+    image: '/projects/parent-alert.png',
     githubUrl: 'https://github.com/manishyadav1391/ParentAlertSystem',
     featured: false,
   },
@@ -37,6 +41,7 @@ export const projects: Project[] = [
     description:
       'Automation bot that logs into the Bis portal, handles captcha and OTP authentication, scrapes bid data, and stores it in a database.',
     tags: ['Python', 'Selenium', 'Playwright', 'SQLite', 'Automation'],
+    image: '/projects/bid-scraper.png',
     featured: true,
   },
 ]
